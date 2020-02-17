@@ -16,4 +16,7 @@ CREATE TABLE doctor(
 );
 GO
 
-CREATE TABLE 
+CREATE TABLE pasciente(
+	idPasciente INT IDENTITY (1,1) NOT NULL PRIMARY KEY,
+);
+GO
