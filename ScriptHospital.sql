@@ -106,6 +106,14 @@ EXEC sp_AgregarDoctor 'Daniel Ramirez','Urología',5,15000;
 EXEC sp_AgregarDoctor 'Marielos Guerra','Otorrinolaringología',1,1500;
 SELECT * FROM doctor ORDER BY salario DESC;
 
+
+
+SELECT D.nombre,D.especialidad ,D.salario
+FROM doctor as D
+where D.salario = (SELECT MAX(salario) from doctor);
+
+
+
 GO
 SELECT D.nombre,D.especialidad ,D.salario
 FROM doctor as D
