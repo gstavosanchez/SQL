@@ -127,6 +127,6 @@ EXEC sp_AgregarPasciente '2001-04-30','Stafany Juarez','53423423','Ciudad Guatem
 EXEC sp_AgregarPasciente '1998-08-27','Ramon Gonsalez','43423423','Ciudad Mexico';
 SELECT * FROM pasciente ORDER BY nombre ASC;
 
-EXEC sp_ModificarPasciente '55196565',1;
-EXEC sp_ModificarPasciente '990296563',2;
-EXEC sp_ModificarPasciente '300296523',3;
+EXEC sp_ModificarPasciente '44396565',1;
+EXEC sp_ModificarPasciente '1230296563',2;
+EXEC sp_ModificarPasciente '555296523',3;
