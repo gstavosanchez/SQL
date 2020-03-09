@@ -7,6 +7,7 @@ GO
 SELECT * FROM cliente;
 GO
 SELECT * FROM visita;
+INSERT INTO visita(idCliente,tipo) values(3,'consumo')
 GO
 EXEC sp_InsertarMesa 'Mesa para Dos',2,'activo';
 EXEC sp_InsertarMesa 'Mesa para Tres',3,'activo';
@@ -96,3 +97,99 @@ CREATE VIEW clientesFrecuentes as
 select * from verCliente where tipo like 'reservacion' and (select COUNT(tipo) from verCliente where tipo like '%reservacion%') >= 5 or tipo like 'consumo' and (select COUNT(tipo) from verCliente where tipo like '%consumo%') >= 10;
 go
 select * from clientesFrecuentes;
+GO
+CREATE VIEW ventaPlatillo
+	AS
+	SELECT p.nombre,p.nacinalidad as nacionalidad,m.diaVenta as DiaVenta
+	FROM platillo as p
+	inner join menu as m on p.idPlatillo = m.idPlatillo
+	inner join detalleFactura as detalle on m.idMenu = detalle.idMenu;
+go
+
+
+CREATE view topVentasPlatillos as
+select nombre, COUNT(*) As Recuento
+from ventaPlatillo
+GROUP BY nombre
+HAVING COUNT(*) > 1 
+go
+select top 3 * from topVentasPlatillos order by Recuento DESC;
+
+go
+CREATE VIEW ingredientesVendidos as
+SELECT i.nombre,p.nombre as Proveedor,o.fechaOrden
+from ingrediente as i
+inner join DetalleOrden as detalle on i.idIngrediente = detalle.idIngrediente
+inner join Orden as o on detalle.idOrden = o.idOrden
+inner join proveedor as p on o.idProveedor = p.idProveedor
+go
+
+select * from ingredientesVendidos;
+go
+CREATE VIEW topIngredientesVendidos as
+select nombre,COUNT(*) as Recuento
+from ingredientesVendidos
+GROUP BY nombre
+HAVING COUNT(*) >= 1
+go
+select top 10 * from topIngredientesVendidos order by Recuento DESC;
+go
+CREATE VIEW proveedorPendiente as
+SELECT p.nombre,o.idOrden,o.fechaOrden,o.estado
+from Orden as o
+inner join proveedor as p on  o.idProveedor = p.idProveedor where o.estado like '%pendiente%';
+go
+select * from proveedorPendiente;
+GO
+CREATE VIEW verClienteReservacionEspecial as 
+SELECT c.idCliente,c.nombre,r.salon,r.fecha 
+from cliente as c
+inner join reservacionEspecial as r on c.idCliente = r.idCliente
+GO
+
+SELECT * from verClienteReservacionEspecial;
+go
+CREATE VIEW topClienteReservacionEspecial as
+select nombre,COUNT(*) as Recuento
+from verClienteReservacionEspecial
+GROUP BY nombre
+HAVING COUNT(*) >= 1
+go
+SElECT TOP 1 * from topClienteReservacionEspecial order by Recuento DESC;
+
+go
+CREATE VIEW verClienteCompras as 
+SELECT c.idCliente,c.nombre,v.tipo 
+from cliente as c
+inner join visita as v on c.idCliente = v.idCliente where v.tipo like '%consumo%';
+GO
+SELECT * FROM verClienteCompras;
+go
+CREATE VIEW topClienteCompras as
+select nombre,COUNT(*) as Recuento
+from verClienteCompras
+GROUP BY nombre
+HAVING COUNT(*) >= 1
+go
+SElECT TOP 1 * from topClienteCompras order by Recuento DESC; 
+GO
+CREATE VIEW mesaReservacion as
+SELECT m.nombre,m.noPersonas,r.fecha AS FechaReservacion
+FROM mesa AS m
+inner join reservacion as r on m.idMesa = r.idMesa
+GO
+CREATE VIEW topMesasReservadas as
+select nombre,COUNT(*) as Recuento
+from mesaReservacion
+GROUP BY nombre
+HAVING COUNT(*) >= 1
+go
+SElECT * from topMesasReservadas order by Recuento DESC; 
+SElECT * from topMesasReservadas  where nombre like '%Mesa para Dos%' order by Recuento DESC; 
+
+
+
+SELECT CONVERT(date,GETDATE(),105)  from factura 
+
+SElECT SUM(total) AS TotalCobrar,COUNT(*) AS Cantidad,AVG(total)as Promedio
+FROM factura ;

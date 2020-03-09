@@ -282,37 +282,3 @@ BEGIN
 	update factura set total = (SELECT sum(m.precio) from menu as m inner join detalleFactura as detalle on m.idMenu = detalle.idMenu where detalle.idFactura = @idFactura) where idFactura = @idFactura;
 END;
 GO
-CREATE VIEW ventaPlatillo
-	AS
-	SELECT p.nombre,p.nacinalidad as nacionalidad,m.diaVenta as DiaVenta
-	FROM platillo as p
-	inner join menu as m on p.idPlatillo = m.idPlatillo
-	inner join detalleFactura as detalle on m.idMenu = detalle.idMenu;
-go
-
-
-CREATE view topVentasPlatillos as
-select nombre, COUNT(*) As Recuento
-from ventaPlatillo
-GROUP BY nombre
-HAVING COUNT(*) > 1 
-go
-select top 3 * from topVentasPlatillos order by Recuento;
-
-go
-CREATE VIEW ingredientesVendidos as
-SELECT i.nombre,p.nombre as Proveedor,o.fechaOrden
-from ingrediente as i
-inner join DetalleOrden as detalle on i.idIngrediente = detalle.idIngrediente
-inner join Orden as o on detalle.idOrden = o.idOrden
-inner join proveedor as p on o.idProveedor = p.idProveedor
-go
-
-select * from ingredientesVendidos;
-go
-CREATE VIEW topIngredientesVendidos as
-select nombre,COUNT(*) as Recuento
-from ingredientesVendidos
-GROUP BY nombre
-HAVING COUNT(*) >= 1
-go
