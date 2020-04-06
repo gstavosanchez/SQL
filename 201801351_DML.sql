@@ -3,11 +3,34 @@ USE Restaurante;
 GO
 EXEC sp_InsertarCliente 'Gustavo','Sanchez','3082398','','44879834','','normal';
 EXEC sp_InsertarCliente 'Elmer','Garcia','4082398','','50998340','','normal';
+EXEC sp_InsertarCliente 'Majo','Garcia','4082398','','50998340','','normal';
+EXEC sp_InsertarCliente 'Rosario','Mendez','4082398','','50998340','','normal';
+EXEC sp_InsertarCliente 'Jackelin','Juarez','4082398','','50998340','','normal';
+EXEC sp_InsertarCliente 'Pedro','Dary','4082398','','50998340','','normal';
+EXEC sp_InsertarCliente 'Danny','Garcia','4082398','','50998340','','normal';
+EXEC sp_InsertarCliente 'Ana','Morales','4082398','','50998340','','normal';
+EXEC sp_InsertarCliente 'Lucia','Sanchez','4082398','','50998340','','normal';
+EXEC sp_InsertarCliente 'Marta','Garcia','4082398','','50998340','','normal';
+EXEC sp_InsertarCliente 'Yuria','Reyes','4082398','','50998340','','normal';
+EXEC sp_InsertarCliente 'Estafany','Lopez','4082398','','50998340','','normal';
 GO
 SELECT * FROM cliente;
 GO
 SELECT * FROM visita;
-INSERT INTO visita(idCliente,tipo) values(3,'consumo')
+INSERT INTO visita(idCliente,tipo) values(10,'consumo')
+INSERT INTO visita(idCliente,tipo) values(10,'consumo')
+INSERT INTO visita(idCliente,tipo) values(10,'consumo')
+INSERT INTO visita(idCliente,tipo) values(10,'consumo')
+INSERT INTO visita(idCliente,tipo) values(10,'consumo')
+INSERT INTO visita(idCliente,tipo) values(10,'consumo')
+INSERT INTO visita(idCliente,tipo) values(10,'consumo')
+INSERT INTO visita(idCliente,tipo) values(10,'consumo')
+INSERT INTO visita(idCliente,tipo) values(10,'consumo')
+INSERT INTO visita(idCliente,tipo) values(10,'consumo')
+INSERT INTO visita(idCliente,tipo) values(13,'reservacion')
+INSERT INTO visita(idCliente,tipo) values(13,'reservacion')
+INSERT INTO visita(idCliente,tipo) values(13,'reservacion')
+INSERT INTO visita(idCliente,tipo) values(13,'reservacion')
 GO
 EXEC sp_InsertarMesa 'Mesa para Dos',2,'activo';
 EXEC sp_InsertarMesa 'Mesa para Tres',3,'activo';
@@ -28,6 +51,11 @@ GO
 SELECT * FROM reservacion;
 GO
 EXEC sp_reservacionEspecial 'Salon 3','2020-03-10','20:00:00','activo',4;
+EXEC sp_reservacionEspecial 'Salon 3','2020-03-11','20:00:00','activo',5;
+EXEC sp_reservacionEspecial 'Salon 3','2020-03-12','20:00:00','activo',5;
+EXEC sp_reservacionEspecial 'Salon 3','2020-03-13','20:00:00','activo',5;
+EXEC sp_reservacionEspecial 'Salon 3','2020-03-14','20:00:00','activo',5;
+EXEC sp_reservacionEspecial 'Salon 3','2020-03-15','20:00:00','activo',5;
 SELECT * FROM reservacionEspecial;
 GO
 EXEC sp_AgregarProveedor 'WALTMART','24658790','Majadas','Pedro';
@@ -114,7 +142,7 @@ GROUP BY nombre
 HAVING COUNT(*) > 1 
 go
 select top 3 * from topVentasPlatillos order by Recuento DESC;
-
+select * from ventaPlatillo;
 go
 CREATE VIEW ingredientesVendidos as
 SELECT i.nombre,p.nombre as Proveedor,o.fechaOrden
@@ -163,8 +191,16 @@ SELECT c.idCliente,c.nombre,v.tipo
 from cliente as c
 inner join visita as v on c.idCliente = v.idCliente where v.tipo like '%consumo%';
 GO
-SELECT * FROM verClienteCompras;
+SELECT * FROM verClienteCompras
 go
+CREATE VIEW topClientesFrecuentes as
+select nombre,COUNT(*) as Recuento
+from verClienteCompras
+group by nombre
+having COUNT(*) >= 1
+GO
+SELECT * FROM topClientesFrecuentes order by Recuento DESC;
+GO
 CREATE VIEW topClienteCompras as
 select nombre,COUNT(*) as Recuento
 from verClienteCompras
@@ -185,11 +221,25 @@ GROUP BY nombre
 HAVING COUNT(*) >= 1
 go
 SElECT * from topMesasReservadas order by Recuento DESC; 
-SElECT * from topMesasReservadas  where nombre like '%Mesa para Dos%' order by Recuento DESC; 
-
+SElECT * from topMesasReservadas  where nombre like '%Mesa para Tres%' order by Recuento DESC; 
+SELECT * from mesa;
 
 
 SELECT CONVERT(date,GETDATE(),105)  from factura 
 
 SElECT SUM(total) AS TotalCobrar,COUNT(*) AS Cantidad,AVG(total)as Promedio
 FROM factura ;
+
+
+select * from empleado;
+select * from tipoEmpleado
+
+select*  from orden;
+
+select e.nombre,o.fechaOrden,o.estado,p.nombre as Proveedor
+from empleado as e
+inner join Orden as o on  e.idEmpleado = o.idEmpleado
+inner join proveedor as p on  o.idProveedor = p.idProveedor
+
+
+

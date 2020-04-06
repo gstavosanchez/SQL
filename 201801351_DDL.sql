@@ -282,3 +282,5 @@ BEGIN
 	update factura set total = (SELECT sum(m.precio) from menu as m inner join detalleFactura as detalle on m.idMenu = detalle.idMenu where detalle.idFactura = @idFactura) where idFactura = @idFactura;
 END;
 GO
+
+
